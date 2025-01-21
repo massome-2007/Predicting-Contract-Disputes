@@ -1,0 +1,50 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report
+
+# Sample data
+data = {
+    'contract_text': [
+        "The party agrees to deliver the goods on time and without defects.",
+        "Payment must be made within 30 days of invoice receipt.",
+        "In case of any disputes, the matter will be resolved through arbitration.",
+        "The supplier shall provide a warranty for a period of one year.",
+        "The buyer has the right to return defective products."
+    ],
+    'dispute': [0, 0, 1, 0, 1]  # 1 indicates dispute, 0 indicates no dispute
+}
+
+# Creating DataFrame
+df = pd.DataFrame(data)
+
+# Vectorizing the contract text using TF-IDF
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(df['contract_text'])
+
+# Target variable
+y = df['dispute']
+
+# Splitting the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Training a Logistic Regression model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Predicting on the test set
+y_pred = model.predict(X_test)
+
+# Evaluating the model
+print(classification_report(y_test, y_pred))
+
+# Example of predicting disputes for new contracts
+new_contracts = [
+    "The contract shall be terminated if the payment is delayed by more than 60 days.",
+    "The seller agrees to provide free shipping for all orders."
+]
+new_X = vectorizer.transform(new_contracts)
+predictions = model.predict(new_X)
+print(predictions)
