@@ -5,16 +5,21 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
 
-# Sample data
+# Sample data (expanded for better classification)
 data = {
     'contract_text': [
         "The party agrees to deliver the goods on time and without defects.",
         "Payment must be made within 30 days of invoice receipt.",
         "In case of any disputes, the matter will be resolved through arbitration.",
         "The supplier shall provide a warranty for a period of one year.",
-        "The buyer has the right to return defective products."
+        "The buyer has the right to return defective products.",
+        "Failure to comply with these terms will result in penalties.",
+        "Any breach of contract will be subject to legal action.",
+        "Both parties must agree to any amendments in writing.",
+        "The contractor must adhere to the specified delivery schedule.",
+        "If a dispute arises, it will be settled in the courts of jurisdiction."
     ],
-    'dispute': [0, 0, 1, 0, 1]  # 1 indicates dispute, 0 indicates no dispute
+    'dispute': [0, 0, 1, 0, 1, 1, 1, 0, 0, 1]  # 1 indicates dispute, 0 indicates no dispute
 }
 
 # Creating DataFrame
@@ -37,8 +42,8 @@ model.fit(X_train, y_train)
 # Predicting on the test set
 y_pred = model.predict(X_test)
 
-# Evaluating the model
-print(classification_report(y_test, y_pred))
+# Evaluating the model with zero_division parameter
+print(classification_report(y_test, y_pred, zero_division=0))
 
 # Example of predicting disputes for new contracts
 new_contracts = [
